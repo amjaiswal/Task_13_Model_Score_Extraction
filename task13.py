@@ -65,7 +65,7 @@ try:
         index=False
     )
 
-    print(predictions)
+    print(predictions.head())
 
     print("\nPredictions saved successfully!")
     print("Location: outputs/predictions.csv")

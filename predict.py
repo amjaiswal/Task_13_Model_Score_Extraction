@@ -1,10 +1,10 @@
 import joblib
 import pandas as pd
 
-# Load model
+# Load trained model
 model = joblib.load("models/model.pkl")
 
-# Required columns
+# Required input columns
 REQUIRED_COLUMNS = [
     "Pclass",
     "Sex",
@@ -15,10 +15,20 @@ REQUIRED_COLUMNS = [
     "Embarked"
 ]
 
+# Model version
 MODEL_VERSION = "v1.0"
 
 
 def validate_input(data):
+    """
+    Validate input data before prediction.
+    """
+
+    # Check for empty input
+    if data.empty:
+        raise ValueError("Input data is empty.")
+
+    # Check for missing columns
     missing = [col for col in REQUIRED_COLUMNS if col not in data.columns]
 
     if missing:
@@ -26,6 +36,9 @@ def validate_input(data):
 
 
 def predict_single(data):
+    """
+    Predict survival for a single passenger.
+    """
 
     df = pd.DataFrame([data])
 
@@ -43,6 +56,9 @@ def predict_single(data):
 
 
 def predict_batch(df):
+    """
+    Predict survival for multiple passengers.
+    """
 
     validate_input(df)
 
@@ -53,9 +69,9 @@ def predict_batch(df):
 
     result["Prediction"] = predictions
     result["Meaning"] = [
-    "Likely Survived" if p == 1 else "Likely Did Not Survive"
-    for p in predictions
-    ]   
+        "Likely Survived" if p == 1 else "Likely Did Not Survive"
+        for p in predictions
+    ]
     result["Probability"] = probabilities.round(4)
     result["Model_Version"] = MODEL_VERSION
 
